@@ -1,36 +1,44 @@
 #!/usr/bin/env python3
-"""Task 3."""
-
-
-from collections import OrderedDict
+""" BaseCaching module
+"""
 from base_caching import BaseCaching
 
 
 class LRUCache(BaseCaching):
-    """A class `LRUCache` that inherits from
-    `BaseCaching` and is a caching system
+    """
+    FIFOCache defines a FIFO caching system.
     """
 
     def __init__(self):
-        """This method initialize the cache"""
+        """
+        This Method .Initialize the class with the parent's init method.
+        """
         super().__init__()
-        self.cache_data = OrderedDict()
+        self.usage = []
 
     def put(self, key, item):
-        """This method Adds an item in the cache."""
+        """
+        This Method Cache a key-value pair.
+        """
         if key is None or item is None:
-            return
-        if key not in self.cache_data:
-            if len(self.cache_data) + 1 > BaseCaching.MAX_ITEMS:
-                lru_key, _ = self.cache_data.popitem(True)
-                print("DISCARD:", lru_key)
-            self.cache_data[key] = item
-            self.cache_data.move_to_end(key, last=False)
+            pass
         else:
+            length = len(self.cache_data)
+            if length >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
+                print("DISCARD: {}".format(self.usage[0]))
+                del self.cache_data[self.usage[0]]
+                del self.usage[0]
+            if key in self.usage:
+                del self.usage[self.usage.index(key)]
+            self.usage.append(key)
             self.cache_data[key] = item
 
     def get(self, key):
-        """This method Retrieves an item by key."""
-        if key is not None and key in self.cache_data:
-            self.cache_data.move_to_end(key, last=False)
-        return self.cache_data.get(key, None)
+        """
+        This Method Return the value linked to a given key, or None.
+        """
+        if key is not None and key in self.cache_data.keys():
+            del self.usage[self.usage.index(key)]
+            self.usage.append(key)
+            return self.cache_data[key]
+        return None

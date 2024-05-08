@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-"""Task 1."""
-
+""" BaseCaching module
+"""
 from base_caching import BaseCaching
 
-
+"""Task 1."""
 class FIFOCache(BaseCaching):
     """FIFOCache defines a FIFO caching system."""
 

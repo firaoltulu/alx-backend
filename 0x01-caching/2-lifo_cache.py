@@ -1,32 +1,43 @@
 #!/usr/bin/env python3
-"""Task 2."""
-from collections import OrderedDict
-
+""" BaseCaching module
+"""
 from base_caching import BaseCaching
 
 
 class LIFOCache(BaseCaching):
-    """This class Represents an object that allows storing and
-    retrieving items from a dictionary with a LIFO
-    removal mechanism when the limit is reached.
+    """
+    Class FIFOCache defines a FIFO caching system.
     """
 
     def __init__(self):
-        """This method Initializes the cache."""
+        """
+        This Method Initialize the class with the parent's init method.
+        """
         super().__init__()
-        self.cache_data = OrderedDict()
+        self.order = []
 
     def put(self, key, item):
-        """This method Adds an item in the cache."""
+        """
+        This Method Cache a key-value pair.
+        """
         if key is None or item is None:
-            return
-        if key not in self.cache_data:
-            if len(self.cache_data) + 1 > BaseCaching.MAX_ITEMS:
-                last_key, _ = self.cache_data.popitem(True)
-                print("DISCARD:", last_key)
-        self.cache_data[key] = item
-        self.cache_data.move_to_end(key, last=True)
+            pass
+        else:
+            length = len(self.cache_data)
+            if length >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
+                print("DISCARD: {}".format(self.order[-1]))
+                del self.cache_data[self.order[-1]]
+                del self.order[-1]
+
+            if key in self.order:
+                del self.order[self.order.index(key)]
+            self.order.append(key)
+            self.cache_data[key] = item
 
     def get(self, key):
-        """This method Retrieves an item by key."""
-        return self.cache_data.get(key, None)
+        """
+        This Method Return the value linked to a given key, or None.
+        """
+        if key is not None and key in self.cache_data.keys():
+            return self.cache_data[key]
+        return None
